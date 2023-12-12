@@ -12,5 +12,7 @@ include_directories(.)
 
 add_subdirectory(array)
 add_subdirectory(gcd)
+add_subdirectory(matrix)
+add_subdirectory(rational)
 add_subdirectory(string_view)
 add_subdirectory(sum)
