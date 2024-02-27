@@ -4,15 +4,21 @@
 
 template <class T>
 class UniquePtr {
- private:
-  T* ptr_ = nullptr;
+  T* ptr_;
 
  public:
-  UniquePtr() = default;
-  explicit UniquePtr(T* pointer) : ptr_(pointer){};  // maybe noexcept
+  UniquePtr() : ptr_(nullptr){};
+
+  explicit UniquePtr(T* pointer) : ptr_(pointer){};
+
+  UniquePtr(const UniquePtr&) = delete;
+
+  UniquePtr& operator=(const UniquePtr&) = delete;
+
   UniquePtr(UniquePtr&& other) noexcept : ptr_(other.ptr_) {
     other.ptr_ = nullptr;
   }
+
   UniquePtr& operator=(UniquePtr&& other) noexcept {
     if (this != &other) {
       delete ptr_;
@@ -21,41 +27,39 @@ class UniquePtr {
     }
     return *this;
   }
-  UniquePtr(const UniquePtr&) = delete;
-  UniquePtr& operator=(const UniquePtr&) = delete;
 
   ~UniquePtr() {
     delete ptr_;
   }
 
-  T* Release() noexcept {
+  T* Release() {
     auto out = ptr_;
     ptr_ = nullptr;
     return out;
   }
 
-  void Reset(T* pointer = nullptr) noexcept {
+  void Reset(T* pointer = nullptr) {
     delete ptr_;
     ptr_ = pointer;
   }
 
-  void Swap(UniquePtr& other) noexcept {
+  void Swap(UniquePtr& other) {
     std::swap(ptr_, other.ptr_);
   }
 
-  T* Get() const noexcept {
+  T* Get() const {
     return ptr_;
   }
 
-  T& operator*() const noexcept {
+  T& operator*() const {
     return *ptr_;
   }
 
-  T* operator->() const noexcept {
+  T* operator->() const {
     return ptr_;
   }
 
-  explicit operator bool() const noexcept {
-    return ptr_;  // static_cast<bool>(ptr_) or ptr != nullptr
+  explicit operator bool() const {
+    return static_cast<bool>(ptr_);
   }
 };
