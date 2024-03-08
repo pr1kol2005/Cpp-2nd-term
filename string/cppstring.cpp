@@ -277,33 +277,15 @@ bool operator<(String left, String right) {
 };
 
 bool operator<=(String left, String right) {
-  for (size_t i = 0; i < std::min(left.size_, right.size_); i++) {
-    if (left.buffer_[i] == right.buffer_[i]) {
-      continue;
-    }
-    return left.buffer_[i] < right.buffer_[i];
-  }
-  return left.size_ <= right.size_;
+  return (left < right) || (left == right);
 };
 
 bool operator>(String left, String right) {
-  for (size_t i = 0; i < std::min(left.size_, right.size_); i++) {
-    if (left.buffer_[i] == right.buffer_[i]) {
-      continue;
-    }
-    return left.buffer_[i] > right.buffer_[i];
-  }
-  return left.size_ > right.size_;
+  return ! (left < right) && ! (left == right);
 };
 
 bool operator>=(String left, String right) {
-  for (size_t i = 0; i < std::min(left.size_, right.size_); i++) {
-    if (left.buffer_[i] == right.buffer_[i]) {
-      continue;
-    }
-    return left.buffer_[i] > right.buffer_[i];
-  }
-  return left.size_ >= right.size_;
+  return ! (left < right);
 };
 
 std::ostream& operator<<(std::ostream& os, const String& string) {
