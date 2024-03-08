@@ -330,6 +330,7 @@ TEST_CASE("Lock", "[WeakPtr]") {
     a = b;
     b.Reset();
     REQUIRE(b.Lock().Get() == nullptr);
+    a.Lock();
     REQUIRE(a.Lock().Get() == p);
   }
 
