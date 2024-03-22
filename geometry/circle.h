@@ -3,18 +3,22 @@
 #include "ishape.h"
 
 namespace geometry {
-  class Circle : public IShape {
-    Point center_;
-    double r_;
-    
-   public:
-    Circle();
-    Circle(Point center, double radius);
+class Circle : public IShape {
+ public:
+  Point center_;
+  int64_t r_;
 
-    IShape& Move(const Vector&) {}
-    bool ContainsPoint(const Point&) {}
-    bool CrossesSegment(const Segment&) {}
-    IShape* Clone() {}
-    void ToString() {}
-  };
+ public:
+  Circle();
+  Circle(const Point& center, int64_t radius);
+
+  Circle& Move(const Vector& vector) override;
+  bool ContainsPoint(const Point& point) const override;
+  bool CrossesSegment(const Segment& segment) const override;
+  Circle* Clone() const override;
+  std::string ToString() const override;
+  ~Circle() override;
+
+  bool ContainsPointWithoutHull(const Point& point) const;
 };
+};  // namespace geometry
