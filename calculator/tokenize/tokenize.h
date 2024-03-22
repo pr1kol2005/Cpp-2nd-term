@@ -1,5 +1,4 @@
-#ifndef TOKENIZE_H_
-#define TOKENIZE_H_
+#pragma once
 
 #include <string>
 #include <variant>
@@ -7,10 +6,16 @@
 
 struct NumberToken {
   int64_t value;
+
+  explicit NumberToken(int64_t valuee) : value(valuee) {
+  }
 };
 
 struct UnknownToken {
   std::string value;
+
+  explicit UnknownToken(std::string valuee) : value(valuee) {
+  }
 };
 
 struct PlusToken {};
@@ -81,5 +86,3 @@ inline bool operator==(const UnknownToken& lhs, const UnknownToken& rhs) {
 }
 
 std::vector<Token> Tokenize(std::string_view str);
-
-#endif //TOKENIZE_H_

@@ -7,9 +7,6 @@ std::vector<std::string_view> Separation(std::string_view input_str) {
   auto end = input_str.find(delimiter, 0);
   size_t space = 0;
   while (begin < input_str.size()) {
-    /*if (begin != end) {
-      separated.emplace_back(input_str.substr(begin, (end == std::string::npos) ? end : end - begin));
-    }*/
     if (begin < end) {
       if (end == input_str.size()) {
         space = end;
