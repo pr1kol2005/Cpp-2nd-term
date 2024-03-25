@@ -1,0 +1,1 @@
+add_executable(stack_public_test stack_public_test.cpp)

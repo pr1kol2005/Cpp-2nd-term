@@ -1,0 +1,1 @@
+add_executable(zip_public_test zip_public_test.cpp)
