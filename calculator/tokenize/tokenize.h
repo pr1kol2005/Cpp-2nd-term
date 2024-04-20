@@ -33,48 +33,51 @@ struct ClosingBracketToken {};
 using Token = std::variant<NumberToken, UnknownToken, PlusToken, MinusToken, MultiplyToken, DivideToken, MinToken,
                            MaxToken, AbsToken, ResidualToken, SqrToken, OpeningBracketToken, ClosingBracketToken>;
 
-inline bool operator==(PlusToken, PlusToken) {
-  return true;
-}
+template <typename T>
+inline bool operator==(T, T) {
+  if (std::is_same<T, PlusToken>::value) {
+    return true;
+  }
 
-inline bool operator==(MinusToken, MinusToken) {
-  return true;
-}
+  if (std::is_same<T, MinusToken>::value) {
+    return true;
+  }
 
-inline bool operator==(MultiplyToken, MultiplyToken) {
-  return true;
-}
+  if (std::is_same<T, MultiplyToken>::value) {
+    return true;
+  }
 
-inline bool operator==(DivideToken, DivideToken) {
-  return true;
-}
+  if (std::is_same<T, DivideToken>::value) {
+    return true;
+  }
 
-inline bool operator==(MinToken, MinToken) {
-  return true;
-}
+  if (std::is_same<T, MinToken>::value) {
+    return true;
+  }
 
-inline bool operator==(MaxToken, MaxToken) {
-  return true;
-}
+  if (std::is_same<T, MaxToken>::value) {
+    return true;
+  }
 
-inline bool operator==(AbsToken, AbsToken) {
-  return true;
-}
+  if (std::is_same<T, AbsToken>::value) {
+    return true;
+  }
 
-inline bool operator==(ResidualToken, ResidualToken) {
-  return true;
-}
+  if (std::is_same<T, ResidualToken>::value) {
+    return true;
+  }
 
-inline bool operator==(SqrToken, SqrToken) {
-  return true;
-}
+  if (std::is_same<T, SqrToken>::value) {
+    return true;
+  }
 
-inline bool operator==(OpeningBracketToken, OpeningBracketToken) {
-  return true;
-}
+  if (std::is_same<T, OpeningBracketToken>::value) {
+    return true;
+  }
 
-inline bool operator==(ClosingBracketToken, ClosingBracketToken) {
-  return true;
+  if (std::is_same<T, ClosingBracketToken>::value) {
+    return true;
+  }
 }
 
 inline bool operator==(NumberToken lhs, NumberToken rhs) {
