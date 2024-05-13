@@ -1,0 +1,1 @@
+add_executable(ct_prime_public_test ct_prime_public_test.cpp)

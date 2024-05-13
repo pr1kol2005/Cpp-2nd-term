@@ -1,0 +1,1 @@
+add_executable(array_traits_public_test array_traits_public_test.cpp)

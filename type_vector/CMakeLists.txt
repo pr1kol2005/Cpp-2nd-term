@@ -1,0 +1,1 @@
+add_executable(type_vector_public_test type_vector_public_test.cpp)
