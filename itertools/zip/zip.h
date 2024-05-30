@@ -1,53 +1,107 @@
-// #define TEMPORARY_ZIP_IMPLEMENTED
+#pragma once
 
-#include <tuple>
+#define TEMPORARY_ZIP_IMPLEMENTED
+
 #include <iterator>
-#include <type_traits>
+#include <tuple>
 #include <utility>
 
-template <typename... Containers>
-class ZipContainer {
-  std::tuple<Containers...> result_;
+template <typename... Iterators>
+class ZipIterator {
+  std::tuple<Iterators...> iterators_;
 
  public:
-  class Iterator {
-    std::tuple<typename Containers::iterator...> iterators_;
+  using iterator_category = std::forward_iterator_tag;                                     // NOLINT
+  using value_type = std::tuple<typename std::iterator_traits<Iterators>::value_type...>;  // NOLINT
+  using reference = std::tuple<typename std::iterator_traits<Iterators>::reference...>;    // NOLINT
+  using pointer = std::tuple<typename std::iterator_traits<Iterators>::pointer...>;        // NOLINT
+  using difference_type = size_t;                                                          // NOLINT
 
-    template <std::size_t... Is>
-    auto dereference(std::index_sequence<Is...>) const {
-      return std::tie(*std::get<Is>(iterators_)...);
-    }
-
-   public:
-    explicit Iterator(typename Containers::iterator... its) : iterators_(its...) {}
-
-    Iterator& operator++() {
-      std::apply([](auto&... its) { (..., ++its); }, iterators_);
-      return *this;
-    }
-
-    bool operator!=(const Iterator& other) const {
-      return iterators_ != other.iterators_;
-    }
-
-    auto operator*() const {
-      return dereference(std::index_sequence_for<Containers...>{});
-    }
-  };
-
-  explicit ZipContainer(Containers&&... conts) : result_(std::forward<Containers>(conts)...) {
+  explicit ZipIterator(Iterators... iterators) : iterators_(iterators...) {
   }
 
-  auto begin() const {
-    return Iterator(std::begin(std::get<Containers>(result_))...);
+  ZipIterator& operator++() {
+    Increment(std::index_sequence_for<Iterators...>{});
+    return *this;
   }
 
-  auto end() const {
-    return Iterator(std::end(std::get<Containers>(result_))...);
+  reference operator*() const {
+    return Dereference(std::index_sequence_for<Iterators...>{});
+  }
+
+  bool operator==(const ZipIterator& other) const {
+    return iterators_ == other.iterators_;
+  }
+
+  bool operator!=(const ZipIterator& other) const {
+    return !IsEqual(other, std::index_sequence_for<Iterators...>{});
+  }
+
+  template <size_t... I>
+  void Increment(std::index_sequence<I...>) {
+    ((++std::get<I>(iterators_)), ...);
+  }
+
+  template <size_t... I>
+  reference Dereference(std::index_sequence<I...>) const {
+    return reference(*std::get<I>(iterators_)...);
+  }
+
+  template <size_t... I>
+  bool IsEqual(const ZipIterator& other, std::index_sequence<I...>) const {
+    return ((std::get<I>(iterators_) == std::get<I>(other.iterators_)) || ...);
   }
 };
 
 template <typename... Containers>
-ZipContainer<Containers...> Zip(Containers&&... inputs) {
-  return ZipContainer<Containers...>(std::forward<Containers>(inputs)...);
+class ZipObject {
+  std::tuple<Containers...> containers_;
+
+ public:
+  using iterator = ZipIterator<decltype(std::begin(std::declval<Containers&>()))...>;              // NOLINT
+  using const_iterator = ZipIterator<decltype(std::begin(std::declval<const Containers&>()))...>;  // NOLINT
+
+  explicit ZipObject(Containers&&... containers) : containers_(std::forward<Containers>(containers)...) {
+  }
+
+  iterator begin() {  // NOLINT
+    return MakeIterator(std::index_sequence_for<Containers...>{});
+  }
+
+  iterator end() {  // NOLINT
+    return MakeEndIterator(std::index_sequence_for<Containers...>{});
+  }
+
+  const_iterator begin() const {  // NOLINT
+    return MakeIterator(std::index_sequence_for<Containers...>{});
+  }
+
+  const_iterator end() const {  // NOLINT
+    return MakeEndIterator(std::index_sequence_for<Containers...>{});
+  }
+
+  template <size_t... I>
+  iterator MakeIterator(std::index_sequence<I...>) {
+    return iterator(std::begin(std::get<I>(containers_))...);
+  }
+
+  template <size_t... I>
+  const_iterator MakeIterator(std::index_sequence<I...>) const {
+    return const_iterator(std::begin(std::get<I>(containers_))...);
+  }
+
+  template <size_t... I>
+  iterator MakeEndIterator(std::index_sequence<I...>) {
+    return iterator(std::end(std::get<I>(containers_))...);
+  }
+
+  template <size_t... I>
+  const_iterator MakeEndIterator(std::index_sequence<I...>) const {
+    return const_iterator(std::end(std::get<I>(containers_))...);
+  }
+};
+
+template <typename... Containers>
+auto Zip(Containers&&... containers) {
+  return ZipObject<Containers...>(std::forward<Containers>(containers)...);
 }
