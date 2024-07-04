@@ -2,8 +2,5 @@ build
 .idea
 .vscode
 cmake-build-debug
-<<<<<<< HEAD
 .DS_Store
-=======
-.DS_Store
->>>>>>> c9d3da6 (add Ds_Store to gitignore)
+SETUP.md
