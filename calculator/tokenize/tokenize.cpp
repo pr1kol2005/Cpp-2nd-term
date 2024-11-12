@@ -1,11 +1,12 @@
 #include "tokenize.h"
 
 std::vector<std::string_view> Separation(std::string_view input_str) {
-  auto separated = std::vector<std::string_view>();
+  std::vector<std::string_view> separated;
   std::string delimiter = " ";
   size_t begin = 0;
   auto end = input_str.find(delimiter, 0);
   size_t space = 0;
+
   while (begin < input_str.size()) {
     if (begin < end) {
       if (end == input_str.size()) {
@@ -18,6 +19,7 @@ std::vector<std::string_view> Separation(std::string_view input_str) {
     begin = (end >= input_str.size() ? end : end + delimiter.size());
     end = input_str.find(delimiter, begin);
   }
+
   return separated;
 }
 
@@ -72,6 +74,9 @@ Token StrToToken(std::string_view token) {
   if (token == ")") {
     return ClosingBracketToken();
   }
+  if (token == "x") {
+    return VariableToken();
+  }
   if (IsNumber(token)) {
     size_t num = 0;
     return NumberToken(std::stol(token.begin(), &num, 10));
@@ -83,8 +88,10 @@ std::vector<Token> Tokenize(std::string_view str) {
   std::vector<std::string_view> separated = Separation(str);
   std::vector<Token> result;
   result.reserve(separated.size());
-  for (auto& substr : separated) {
+
+  for (const auto& substr : separated) {
     result.emplace_back(StrToToken(substr));
   }
+
   return result;
 }

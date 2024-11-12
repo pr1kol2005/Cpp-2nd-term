@@ -14,7 +14,7 @@ struct NumberToken {
 struct UnknownToken {
   std::string value;
 
-  explicit UnknownToken(std::string valuee) : value(valuee) {
+  explicit UnknownToken(std::string value_) : value(value_) {
   }
 };
 
@@ -29,9 +29,10 @@ struct ResidualToken {};
 struct SqrToken {};
 struct OpeningBracketToken {};
 struct ClosingBracketToken {};
+struct VariableToken {};
 
 using Token = std::variant<NumberToken, UnknownToken, PlusToken, MinusToken, MultiplyToken, DivideToken, MinToken,
-                           MaxToken, AbsToken, ResidualToken, SqrToken, OpeningBracketToken, ClosingBracketToken>;
+                           MaxToken, AbsToken, ResidualToken, SqrToken, OpeningBracketToken, ClosingBracketToken, VariableToken>;
 
 template <typename T>
 inline bool operator==(T, T) {
@@ -78,9 +79,15 @@ inline bool operator==(T, T) {
   if (std::is_same<T, ClosingBracketToken>::value) {
     return true;
   }
+
+  if (std::is_same<T, VariableToken>::value) {
+    return true;
+  }
+
+  return false;
 }
 
-inline bool operator==(NumberToken lhs, NumberToken rhs) {
+inline bool operator==(const NumberToken& lhs, const NumberToken& rhs) {
   return lhs.value == rhs.value;
 }
 
